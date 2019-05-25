@@ -25,7 +25,7 @@ INSERT INTO products (product_name, department_name, price, stock_quantity)
 VALUES ('Blorgner"s Flame Pocket Stove', 'Outdoor Gear', 600, 3);
 
 INSERT INTO products (product_name, department_name, price, stock_quantity)
-VALUES ('Baron Crystal Robe', 'Clothing', 700, 7);
+VALUES ('Baron Crystal Robe', 'Clothing', 700, 0);
 
 INSERT INTO products (product_name, department_name, price, stock_quantity)
 VALUES ('Celty Phoenix Cap (Red)', 'Clothing', 200, 10);
