@@ -9,14 +9,51 @@ var connection = mysql.createConnection({
     database: "bamazon_db"
 });
 
-connection.connect(function(err){
-    if(err) throw err;
-    console.log("connected as id " + connection.threadId);
-    afterConnection();
-});
+// connection.connect(function(err){
+//     if(err) throw err;
+//     console.log("connected as id " + connection.threadId);
+//     afterConnection();
+// });
 
-//logging all items in database
-function afterConnection() {
+//function to execute inquirer questions
+function menu() {
+    console.log(`
+    * ~ * ~ Welcome to Vogner's Shoppe ~ * ~ *
+    `)
+    //then execute questions for order
+    inquirer
+      .prompt ([
+        {
+          type: "list",
+          name: "menu",
+          message: "What would you like to do?",
+          choices: ["Browse the Shoppe", "Place an Order", "Come Back Later"]
+        }
+      ])
+      //take response from questions and:
+      .then(function(input){
+        //if browse the shoppe
+        if (input.menu === "Browse the Shoppe") {
+            //enact list function
+            listItems();
+        } //else if place an order
+          else if (input.menu === "Place an Order") {
+            //enact place order function
+            placeOrder();
+        } //else if come back later
+          else if (input.menu === "Come Back Later") {
+            //quit
+            connection.end();
+        }    
+      })
+      .catch (function(err) {
+          console.log(err);
+      });   
+} 
+menu();
+
+//function for logging all items in database
+function listItems() {
     connection.query("SELECT * FROM products", function(err,res){
         if (err) throw err;
         
@@ -29,27 +66,36 @@ function afterConnection() {
             Stock: ${item.stock_quantity}
              `)
         });
-        connection.end();
+        menu();
     });
 }
 
-//function to execute inquirer questions
-function questions() {
+//function for placing order
+function placeOrder() {
     inquirer
       .prompt ([
         //asking which item customer would like to buy
-        {type: "number",
-        name: "itemId",
-        message: "Young Master, what is the ID of the item you'd like to purchase?"  
-        },
-        //asking how many of item they would like to buy
-        {type: "number",
-         name: "quantity",
-         message: "How many do you desire?",
-        }
-      ])
-} //take response from questions and:
-//using response back from itemId question query database for particular item entered
+        {
+            type: "number",
+            name: "itemId",
+            message: "Young Master, what is the ID of the item you'd like to purchase?"  
+         },
+         //asking how many of item they would like to buy
+         {
+            type: "number",
+            name: "quantity",
+            message: "How many do you desire?",
+         }
+      ]).then (function(input){
+        console.log("The Item ID is: " + parseInt(input.itemId));
+        console.log("You ordered " + input.quantity + " of this item.");
+        menu();
+        
+      }).catch (function(err) {
+          console.log(err);
+      });
+}
+
     //if in stock 
         //subtract one from total stock
         //update stock
@@ -60,5 +106,6 @@ function questions() {
         //go to inquirer prompt
             //would you like to oder something else?
                 //brings back to initial questions
+                //callback to questions();
             //quit
                 //connection.end();
