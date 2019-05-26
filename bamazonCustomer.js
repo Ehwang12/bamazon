@@ -87,13 +87,53 @@ function placeOrder() {
             message: "How many do you desire?",
          }
       ]).then (function(input){
-        console.log("The Item ID is: " + parseInt(input.itemId));
-        console.log("You ordered " + input.quantity + " of this item.");
-        menu();
-        
+        //query database for item with particular ID
+        var sql = "SELECT item_id, stock_quantity " + " FROM products WHERE item_id = " 
+                  + mysql.escape(input.itemId) + " AND stock_quantity = " 
+                  + mysql.escape(input.quantity); 
+
+        connection.query(sql, function(err, res){
+            if (err) throw err;
+            res.forEach(function(item){
+                let data = JSON.parse(JSON.stringify(item[0]));
+                //if item quantity is in stock.
+                if (data.stock_quantity > 0) {
+                    console.log(`
+                    That will be ${data.price} groobles. 
+                    Fortuna's Blessings for stopping by today! 
+                    `)
+                    orderAgain();
+                } else if(data.stock_quantity === 0) {
+                    console.log(`
+                    Fortune's folly Young Master, your request is not in stock at the moment.
+                    `)
+                    orderAgain();
+                }
+            })
+          })
       }).catch (function(err) {
           console.log(err);
       });
+}
+
+function orderAgain() {
+    inquirer
+      .prompt ([
+          {
+              type:"list",
+              message: "Would you like to order anything else?",
+              choices: ["I'd like to place another order", "Nay, I am well."],
+              name:"anotherOrder"
+          }
+      ]).then(function(input){
+        if(input.choices === "I'd like to place another order") {
+            placeOrder();
+        } else if(input.choices === "Nay, I am well.") {
+            connection.end();
+        }
+      }).catch(function(err){
+          console.log(err);
+      })
 }
 
     //if in stock 
