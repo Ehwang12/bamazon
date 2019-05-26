@@ -88,33 +88,36 @@ function placeOrder() {
          }
       ]).then (function(input){
         //query database for item with particular ID
-        var sql = "SELECT item_id, stock_quantity " + " FROM products WHERE item_id = " 
+        var sql = "SELECT * FROM bamazon_db.products WHERE item_id = " 
                   + mysql.escape(input.itemId) + " AND stock_quantity = " 
                   + mysql.escape(input.quantity); 
-
+        
         connection.query(sql, function(err, res){
             if (err) throw err;
-            res.forEach(function(item){
-                let data = JSON.parse(JSON.stringify(item[0]));
+            console.log(res);
+        })
+       
+            
+            // res.forEach(function(item){
+            //     console.log(item);
                 //if item quantity is in stock.
-                if (data.stock_quantity > 0) {
-                    console.log(`
-                    That will be ${data.price} groobles. 
-                    Fortuna's Blessings for stopping by today! 
-                    `)
-                    orderAgain();
-                } else if(data.stock_quantity === 0) {
-                    console.log(`
-                    Fortune's folly Young Master, your request is not in stock at the moment.
-                    `)
-                    orderAgain();
-                }
-            })
-          })
-      }).catch (function(err) {
-          console.log(err);
-      });
+                // if (data.stock_quantity > 0) {
+                //     console.log(`
+                //     That will be ${data.price} groobles. 
+                //     Fortuna's Blessings for stopping by today! 
+                //     `)
+                //     orderAgain();
+                // } else if(data.stock_quantity === 0) {
+                //     console.log(`
+                //     Fortune's folly Young Master, your request is not in stock at the moment.
+                //     `)
+                //     orderAgain();
+            // });
+            connection.end(); 
+        })
+    })
 }
+
 
 function orderAgain() {
     inquirer
@@ -129,12 +132,13 @@ function orderAgain() {
         if(input.choices === "I'd like to place another order") {
             placeOrder();
         } else if(input.choices === "Nay, I am well.") {
-            connection.end();
+            return connection.end();
         }
       }).catch(function(err){
           console.log(err);
-      })
+      });
 }
+
 
     //if in stock 
         //subtract one from total stock
@@ -148,4 +152,4 @@ function orderAgain() {
                 //brings back to initial questions
                 //callback to questions();
             //quit
-                //connection.end();
+                //connection.end()
