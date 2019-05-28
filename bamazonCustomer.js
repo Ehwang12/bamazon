@@ -93,17 +93,26 @@ function placeOrder() {
         
         connection.query(sql, function(err, res){
             if (err) throw err;
-            
+            let quantityReq = input.quantity;
             //loop through data packet
             res.forEach(function(item){
                 
                 // if item quantity is in stock
                 if (item.stock_quantity > 0) {
+                    let newPrice = item.price * quantityReq;
                     console.log(`
                     You are purchasing ${item.product_name}.
-                    That will be ${item.price} groobles. 
+                    That will be ${newPrice} groobles. 
                     Fortuna's Blessings for stopping by today! 
                     `)
+
+                    //update stock 
+                    connection.query("UPDATE products SET ? WHERE ?",
+                      [
+                          {stock_quantity: stock_quantity - input.quantity}
+                      ]
+                    )
+
                     orderAgain();
 
                 } else if(item.stock_quantity === 0) {
