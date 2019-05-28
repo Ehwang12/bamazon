@@ -9,12 +9,6 @@ var connection = mysql.createConnection({
     database: "bamazon_db"
 });
 
-// connection.connect(function(err){
-//     if(err) throw err;
-//     console.log("connected as id " + connection.threadId);
-//     afterConnection();
-// });
-
 //function to execute inquirer questions
 function menu() {
     console.log(`
@@ -52,21 +46,29 @@ function menu() {
 } 
 menu();
 
+var array = [];
 //function for logging all items in database
 function listItems() {
-    connection.query("SELECT * FROM products", function(err,res){
-        if (err) throw err;
+  connection.query("SELECT * FROM products", function(err,res){
+    if (err) throw err;
+
+    console.log(`
+    ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~  
+    ID   Product Name                            Department                   Price
+    ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ 
+    `); 
         
-       res.forEach(function(item){
-            console.log(`
-            =====${item.product_name}=====
-            Item ID: ${item.item_id}
-            Department: ${item.department_name}
-            Price: ${item.price}
-            Stock: ${item.stock_quantity}
-             `)
-        });
-        menu();
+  res.forEach(function(item){
+    array.push({
+      ID: item.item_id,
+      Product: item.product_name,
+      Department: item.department_name,
+      Price: item.price
+    })
+
+});
+    console.table(array);
+    menu();
     });
 }
 
@@ -121,12 +123,10 @@ function placeOrder() {
                       ],
                       function(err, res) {
                           if (err) throw err;
-                          console.log(res);
+                          
                           orderAgain();
                       }
                     );
-
-                   
 
                 } else if(item.stock_quantity === 0) {
                     console.log(`
@@ -136,12 +136,12 @@ function placeOrder() {
                     orderAgain();
                 }    
             })
-            // connection.end(); 
+            
         })
     })
 }
 
-
+//function for ordering again after initial order
 function orderAgain() {
     inquirer
       .prompt ([
@@ -164,16 +164,4 @@ function orderAgain() {
 }
 
 
-    //if in stock 
-        //subtract one from total stock
-        //update stock
-        //grab price of item from database
-        //console log "Fortuna's blessings for your purchase. Your total will be 'item price' grubles."
-    //else if not in stock
-        //console log "Fortune's folly Young Master, we are out of stock of the item. "
-        //go to inquirer prompt
-            //would you like to oder something else?
-                //brings back to initial questions
-                //callback to questions();
-            //quit
-                //connection.end()
+    
