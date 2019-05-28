@@ -4,24 +4,30 @@
 
  This was an assignment through the University of Minnesota Coding Bootcamp. 
 
-##Getting Started
-1. Create a MySQL Database called `bamazon`.
+## Getting Started
+1. Clone down the repository.
 
-2. Then create a Table inside of that database called `products`.
+2. Open your command line or Terminal and make sure to run the command `npm install`.
 
-3. The products table should have each of the following columns:
+3. Since bamazon uses a MySql database, make sure to install and create the database using the provided `bamazon_DB.sql` file. 
 
-   * item_id (unique id for each product)
+4. Once you have the MySql database set up, you are ready to order from Vogner's Shoppe!
 
-   * product_name (Name of product)
+### BamazonCustomer
 
-   * department_name
+To begin run `node bamazonCustomer.js` in your terminal or command line. (Make sure to install npm before doing so).
 
-   * price (cost to customer)
+Once you have it running, you can choose either of three options. Choosing to `Browse the Shoppe` will display all the items you can order. 
 
-   * stock_quantity (how much of the product is available in stores)
+![listing function demo gif](list-function-example.gif);
 
-4. Populate this database with around 10 different products. (i.e. Insert "mock" data rows into this database and table).
+To place an order just choose the `Place an Order` option and it will walk through ordering.
 
-5. Then create a Node application called `bamazonCustomer.js`. Running this application will first display all of the items available for sale. Include the ids, names, and prices of products for sale.
+![placing order demo gif](place-order-ex.gif)
 
+
+#### Created Using:
+* Node.js
+* MySql NPM Package
+* Inquirer NPM Package
+* Cli-Table NPM Package
