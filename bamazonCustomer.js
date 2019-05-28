@@ -87,33 +87,34 @@ function placeOrder() {
             message: "How many do you desire?",
          }
       ]).then (function(input){
-        //query database for item with particular ID
-        var sql = "SELECT * FROM bamazon_db.products WHERE item_id = " 
-                  + mysql.escape(input.itemId) + " AND stock_quantity = " 
-                  + mysql.escape(input.quantity); 
+          console.log(input);
+        // query database for item with particular ID
+        var sql = "SELECT * FROM products WHERE item_id = " + mysql.escape(input.itemId); 
         
         connection.query(sql, function(err, res){
             if (err) throw err;
-            console.log(res);
-        })
-       
             
-            // res.forEach(function(item){
-            //     console.log(item);
-                //if item quantity is in stock.
-                // if (data.stock_quantity > 0) {
-                //     console.log(`
-                //     That will be ${data.price} groobles. 
-                //     Fortuna's Blessings for stopping by today! 
-                //     `)
-                //     orderAgain();
-                // } else if(data.stock_quantity === 0) {
-                //     console.log(`
-                //     Fortune's folly Young Master, your request is not in stock at the moment.
-                //     `)
-                //     orderAgain();
-            // });
-            connection.end(); 
+            //loop through data packet
+            res.forEach(function(item){
+                
+                // if item quantity is in stock
+                if (item.stock_quantity > 0) {
+                    console.log(`
+                    You are purchasing ${item.product_name}.
+                    That will be ${item.price} groobles. 
+                    Fortuna's Blessings for stopping by today! 
+                    `)
+                    orderAgain();
+
+                } else if(item.stock_quantity === 0) {
+                    console.log(`
+                    Fortune's folly Young Master, ${item.product_name} 
+                        is not in stock at the moment.
+                    `)
+                    orderAgain();
+                }    
+            })
+            // connection.end(); 
         })
     })
 }
@@ -129,9 +130,10 @@ function orderAgain() {
               name:"anotherOrder"
           }
       ]).then(function(input){
-        if(input.choices === "I'd like to place another order") {
-            placeOrder();
-        } else if(input.choices === "Nay, I am well.") {
+        if(input.anotherOrder === "I'd like to place another order") {
+            menu();
+
+        } else if(input.anotherOrder === "Nay, I am well.") {
             return connection.end();
         }
       }).catch(function(err){
