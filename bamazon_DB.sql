@@ -22,7 +22,7 @@ INSERT INTO products (product_name, department_name, price, stock_quantity)
 VALUES ('Apprentice Scout Single Tent', 'Outdoor Gear', 150, 10);
 
 INSERT INTO products (product_name, department_name, price, stock_quantity)
-VALUES ('Blorgner"s Flame Pocket Stove', 'Outdoor Gear', 600, 3);
+VALUES ('Blorgner\'s Flame Pocket Stove', 'Outdoor Gear', 600, 3);
 
 INSERT INTO products (product_name, department_name, price, stock_quantity)
 VALUES ('Baron Crystal Robe', 'Clothing', 700, 0);
@@ -34,13 +34,13 @@ INSERT INTO products (product_name, department_name, price, stock_quantity)
 VALUES ('Jaugernat Gris Jerky', 'Provisions', 30, 15);
 
 INSERT INTO products (product_name, department_name, price, stock_quantity)
-VALUES ('Profnic"s Potion', 'Provisions', 50, 15);
+VALUES ('Profnic\'s Potion', 'Provisions', 50, 15);
 
 INSERT INTO products (product_name, department_name, price, stock_quantity)
 VALUES ('Mystik Elixir', 'Provisions', 50, 15);
 
 INSERT INTO products (product_name, department_name, price, stock_quantity)
-VALUES ('Varda"s Dagger', 'Weapons', 230, 1);
+VALUES ('Varda\'s Dagger', 'Weapons', 230, 1);
 
 INSERT INTO products (product_name, department_name, price, stock_quantity)
 VALUES ('Borja Heavyweight Shield', 'Weapons', 500, 1);

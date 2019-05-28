@@ -1,6 +1,9 @@
+//instantiate variables
 var mysql = require('mysql');
 var inquirer = require('inquirer');
+var Table = require('cli-table');
 
+//connecting to database
 var connection = mysql.createConnection({
     host: "localhost",
     port: 8889,
@@ -46,28 +49,24 @@ function menu() {
 } 
 menu();
 
-var array = [];
+//setting up table layout using cli-table npm
+const table = new Table({
+    head: ['ID', 'Product', 'Department', 'Price'],
+    colWidths: [5,40,15,10]
+});
 //function for logging all items in database
 function listItems() {
   connection.query("SELECT * FROM products", function(err,res){
-    if (err) throw err;
-
-    console.log(`
-    ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~  
-    ID   Product Name                            Department                   Price
-    ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ 
-    `); 
+    if (err) throw err; 
         
   res.forEach(function(item){
-    array.push({
-      ID: item.item_id,
-      Product: item.product_name,
-      Department: item.department_name,
-      Price: item.price
-    })
+    table.push([
+      item.item_id, item.product_name, 
+      item.department_name, item.price
+      ]);
 
 });
-    console.table(array);
+    console.table(table.toString());
     menu();
     });
 }
@@ -89,7 +88,7 @@ function placeOrder() {
             message: "How many do you desire?",
          }
       ]).then (function(input){
-          console.log(input);
+         
         // query database for item with particular ID
         var sql = "SELECT * FROM products WHERE item_id = " + mysql.escape(input.itemId); 
         
@@ -103,7 +102,7 @@ function placeOrder() {
                 let productName = item.product_name;
                 let newStock = item.stock_quantity -= quantityReq;
                 // if item quantity is in stock
-                if (item.stock_quantity > 0) {
+                if (item.stock_quantity > quantityReq) {
                     let newPrice = item.price * quantityReq;
                     console.log(`
                     You are purchasing ${productName}.
@@ -133,8 +132,16 @@ function placeOrder() {
                     Fortune's folly Young Master, ${item.product_name} 
                         is not in stock at the moment.
                     `)
+
                     orderAgain();
-                }    
+                } else {
+                    console.log(`
+                    A thousand pardons Young Master but we only have 
+                    ${item.stock_quantity} in stock. 
+                    `)
+
+                    orderAgain();
+                }   
             })
             
         })
